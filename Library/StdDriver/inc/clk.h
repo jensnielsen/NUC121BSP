@@ -379,7 +379,11 @@ __STATIC_INLINE uint32_t CLK_GetPLLClockFreq(void)
   * @details    Use the SysTick to generate the delay time and the UNIT is in us.
   *             The SysTick clock source is from HCLK, i.e the same as system core clock.
   *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
+  *
+  *             Override this function by defining NUC_OVERRIDE_SYSTICK_DELAY to allow user application with systick,
+  *             since this function is called from usbd and this implementation disables systick when done
   */
+#ifndef NUC_OVERRIDE_SYSTICK_DELAY
 __STATIC_INLINE void CLK_SysTickDelay(uint32_t us)
 {
     SysTick->LOAD = us * CyclesPerUs;
@@ -392,6 +396,9 @@ __STATIC_INLINE void CLK_SysTickDelay(uint32_t us)
     /* Disable SysTick counter */
     SysTick->CTRL = 0;
 }
+#else
+void CLK_SysTickDelay(uint32_t us);
+#endif
 
 void CLK_DisableCKO(void);
 void CLK_EnableCKO(uint32_t u32ClkSrc, uint32_t u32ClkDiv, uint32_t u32ClkDivBy1En);
