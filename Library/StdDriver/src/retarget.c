@@ -463,6 +463,7 @@ void SendChar_ToUART(int ch)
  *
  * @details  Send a target char to UART debug port or semihost.
  */
+#ifndef NUC_OVERRIDE_SENDCHAR
 void SendChar(int ch)
 {
 #if defined(DEBUG_ENABLE_SEMIHOST)
@@ -488,6 +489,9 @@ void SendChar(int ch)
     SendChar_ToUART(ch);
 #endif
 }
+#else
+void SendChar(int ch);
+#endif
 
 /**
  * @brief    Routine to get a char
